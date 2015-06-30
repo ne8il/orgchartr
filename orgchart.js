@@ -125,18 +125,20 @@ function findInList(list, id){
 }
 
 function generateTree(list){
-  var map = {}, node, roots = [];
+  var roots = [];
 
-  for (var i = 0; i < list.length; i += 1) {
-    node = list[i];
+  list.forEach(function(node){
     node.children = [];
-    map[node._id] = node;
+  });
+
+  list.forEach(function(node){
     if (node.boss_id) {
         findInList(list, node.boss_id).children.push(node);
     } else {
         roots.push(node);
     }
-  }
+  });
+
   return roots;
 }
 
