@@ -9,6 +9,10 @@ if (Meteor.isClient) {
       return a === b;
   });
 
+  Template.registerHelper('ne', function (a, b) {
+      return a !== b;
+  });
+
   function allPeople(){
     return People.find({});
   }
@@ -28,7 +32,6 @@ if (Meteor.isClient) {
 
     showEditForm : function(){
       var showEdit = isAdding() || isEditing();
-      console.log(showEdit, "showEdit");
       return showEdit;
     },
     isAddingPerson : isAdding,
@@ -46,7 +49,6 @@ if (Meteor.isClient) {
   },
 
   "click .edit-person button.cancel" : function(event){
-    console.log(event);
 
     Session.set({
     "addingPerson" : false,
@@ -67,7 +69,7 @@ if (Meteor.isClient) {
       "addingPerson" : false,
       "editingPerson" : null
     });
-    
+
     return false;
   },
 
