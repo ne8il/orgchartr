@@ -87,3 +87,11 @@ form.edit-person {
 	  stroke: #ccc;
 	  stroke-width: 2px;
 	}
+
+  .btn.delete {
+    width:100%;
+  }
+
+  .form-group.save-cancel-group .btn {
+    width:48%;
+  }

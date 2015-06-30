@@ -60,20 +60,41 @@ if (Meteor.isClient) {
 
   },
 
+  "click .edit-person button.delete" : function(event){
+    Meteor.call("removePerson", Session.get("editingPerson"));
+
+    Session.set({
+      "addingPerson" : false,
+      "editingPerson" : null
+    });
+    
+    return false;
+  },
+
   "click .edit-person button.save" : function(event){
     var nameInput = document.querySelector("#personName");
     var titleInput = document.querySelector("#personTitle");
     var bossInput = document.querySelector("#personBoss");
 
+    var name = nameInput.value;
     var title = titleInput.value;
     var bossId = bossInput.value;
 
-    Meteor.call("addPerson", nameInput.value, title, bossId);
+    if(Session.get("editingPerson")){
+      Meteor.call("updatePerson", Session.get("editingPerson"), name, title, bossId);
+    }else{
+      Meteor.call("addPerson", name, title, bossId);
+    }
+
     nameInput.value = "";
     titleInput.value = "";
     bossInput.value = "---";
 
-    Session.set("addingPerson", false);
+    Session.set({
+      "addingPerson" : false,
+      "editingPerson" : null
+    });
+
     return false;
     }
   });
@@ -134,57 +155,79 @@ function generateTree(list){
     var nodes = tree.nodes(root).reverse(),
   	  links = tree.links(nodes);
 
-    // Normalize for fixed-depth.
     nodes.forEach(function(d) { d.y = d.depth * 200; });
 
-    var node = svg.selectAll("g.node")
+    var node = svg.selectAll("g.person-avatar")
   	  .data(nodes, function(d) { return d._id });
 
-    var personNode = node.enter().append("g")
-  	  .attr("class", "person-avatar")
-  	  .attr("transform", function(d) {
-  		  return "translate(" + d.x + "," + d.y + ")";
-      });
+      node.exit().remove();
+
+      var g = node.enter()
+      .append("g")
+      .attr("class", "person-avatar");
+
+      g.append("rect");
+
+      g.append("text")
+      .attr("class", "icon");
+
+      g.append("text")
+      .attr("class", "name");
+
+      g.append("text")
+      .attr("class", "title");
 
       var rectWidth = 100,
           rectHeight = 150;
-    personNode.append("rect")
-      .attr("width", rectWidth + "px")
-      .attr("height", rectHeight + "px")
-  	  .attr("x", -(rectWidth / 2) + "px")
-      .attr("y", -(rectHeight / 2) + "px")
-      .attr("rx", 15)
-      .attr("ry", 15);
 
-      personNode.append("text")
-      .text('\uf007')
-      .attr("x","-25px")
-      .attr("y","-20px")
-      .classed("icon", true)
-      .classed("fa", true);
+          node
+          .transition()
+          .duration(200)
+      	  .attr("transform", function(d) {
+      		  return "translate(" + d.x + "," + d.y + ")";
+          });
 
-    personNode.append("text")
-  	  .attr("dy", ".35em")
-      .attr("text-anchor", "middle")
-  	  .text(function(d) { return d.name; })
+          node.select("rect")
+          .attr("width", rectWidth + "px")
+          .attr("height", rectHeight + "px")
+      	  .attr("x", -(rectWidth / 2) + "px")
+          .attr("y", -(rectHeight / 2) + "px")
+          .attr("rx", 15)
+          .attr("ry", 15);
 
-      personNode.append("text")
-      .classed("title", true)
-      .attr("y", 15)
-      .attr("dy", ".5em")
-      .attr("text-anchor", "middle")
-      .text(function(d) { return "(" + d.title + ")" });
+          node.select("text.icon")
+          .text('\uf007')
+          .attr("x","-25px")
+          .attr("y","-20px")
+          .classed("fa", true);
 
-      personNode.on("click", function(d,i,j){
-        var this_id = d._id;
-        Session.set("editingPerson", this_id);
-      });
+          node.select("text.name")
+      	  .attr("dy", ".35em")
+          .attr("text-anchor", "middle")
+      	  .text(function(d) { return d.name; })
+
+          node.select("text.title")
+          .attr("y", 15)
+          .attr("dy", ".5em")
+          .attr("text-anchor", "middle")
+          .text(function(d) { return "(" + d.title + ")" });
+
+          node.on("click", function(d,i,j){
+            var this_id = d._id;
+            Session.set("editingPerson", this_id);
+          });
 
     var link = svg.selectAll("path.link")
   	  .data(links, function(d) { return d.target._id; });
 
+      link.exit().remove();
+
     link.enter().insert("path", "g")
-  	  .attr("class", "link")
+  	  .attr("class", "link");
+
+      link
+      .transition()
+      .duration(200)
   	  .attr("d", diagonal);
     }
 }
@@ -208,7 +251,7 @@ Meteor.methods({
     });
   },
 
-  savePerson : function(id, name, title, bossId){
+  updatePerson : function(id, name, title, bossId){
     People.update(id, {
       $set : {
         name : name,
@@ -216,5 +259,9 @@ Meteor.methods({
         boss_id : bossId === '---' ? null : bossId
       }
     });
+  },
+
+  removePerson : function(id){
+    People.remove(id);
   }
 });

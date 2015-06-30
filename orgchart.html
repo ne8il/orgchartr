@@ -87,8 +87,15 @@
         {{/each}}
       </select>
     </div>
-    <button class="save btn btn-default">Save</button>
-    <button class="cancel btn btn-default">Cancel</button>
+    {{#if person}}
+    <div class="form-group">
+      <button class="delete btn btn-danger">Delete</button>
+    </div>
+    {{/if}}
+    <div class="form-group save-cancel-group">
+      <button class="save btn btn-primary">Save</button>
+      <button class="cancel btn btn-default">Cancel</button>
+    </div>
   </form>
 </template>
 
