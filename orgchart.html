@@ -1,36 +1,70 @@
 <head>
   <title>orgchart</title>
 
-
+<link href="css/bootstrap.min.css" type="text/css" />
   <link href="css/orgchart.css" type="text/css" />
 </head>
 
 <body>
 
-
+  <header class="navbar navbar-static-top bs-docs-nav" id="top" role="banner">
   <div class="container">
-    <header>
-      <h1>Todo List ({{incompleteCount}})</h1>
-
-    </header>
-    <label class="hide-completed">
-      <input type="checkbox" checked="{{hideCompleted}}" />
-      Hide Completed Tasks
-    </label>
-
-    <form class="new-task">
-      <input type="text" name="text" placeholder="Type to add new tasks" />
-    </form>
-
-    <ul>
-      {{#each tasks}}
-        {{> task}}
-      {{/each}}
-    </ul>
+    <div class="navbar-header">
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#bs-navbar" aria-controls="bs-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a href="../" class="navbar-brand">Orgchartr</a>
+    </div>
+    <nav id="bs-navbar" class="collapse navbar-collapse">
+      <ul class="nav navbar-nav">
+        <!-- <li>
+          <a href="../getting-started/">Getting started</a>
+        </li> -->
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <!-- <li><a href="http://expo.getbootstrap.com" onclick="ga('send', 'event', 'Navbar', 'Community links', 'Expo');">Expo</a></li> -->
+      </ul>
+    </nav>
   </div>
+</header>
+
+
+    <div class="container">
+
+        <div class="row">
+            <div class="sidebar">
+              {{#if isAddingPerson}}
+                {{> addPersonForm}}
+              {{else}}
+                <div class="sidebar-item add-person">Add Person</div>
+                <div class="sidebar-item add-team">Add Team</div>
+              {{/if}}
+            </div>
+
+            <div class="col-lg-10 col-lg-offset-2 col-md-10 col-md-offset-2 col-sm-10 col-sm-offset-2">
+                <ul id="personList">
+                  {{#each people}}
+                    {{> person}}
+                  {{/each}}
+                </ul>
+                <div id="orgMap">
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
 
 </body>
 
+<template name="person">
+  <li>{{name}}</li>
+</template>
 <template name="task">
   <li class="{{#if checked}}checked{{/if}}">
    <button class="delete">&times;</button>
@@ -39,4 +73,19 @@
 
    <span class="text">{{text}}</span>
  </li>
+</template>
+
+<template name="addPersonForm">
+  <form class="new-person">
+    <label>Name
+    <input type="text" />
+    </label>
+
+    <label>Team
+    <input type="text" />
+    </label>
+
+    <input type="submit" value="Save" />
+    <button class="cancel">Cancel</button>
+  </form>
 </template>
