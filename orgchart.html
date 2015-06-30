@@ -2,6 +2,7 @@
   <title>orgchart</title>
 
 <link href="css/bootstrap.min.css" type="text/css" />
+<link href="css/font-awesome.min.css" type="text/css" />
   <link href="css/orgchart.css" type="text/css" />
 </head>
 
@@ -36,24 +37,25 @@
 
         <div class="row">
             <div class="sidebar">
-              {{#if isAddingPerson}}
-                {{> addPersonForm}}
+              {{#if showEditForm}}
+                  {{>addPersonForm person=getEditPerson}}
               {{else}}
-                <div class="sidebar-item add-person">Add Person</div>
-                <div class="sidebar-item add-team">Add Team</div>
+                  {{>sidebarForm}}
               {{/if}}
             </div>
 
             <div class="col-lg-10 col-lg-offset-2 col-md-10 col-md-offset-2 col-sm-10 col-sm-offset-2">
-                <ul id="personList">
+                <!-- <ul id="personList">
                   {{#each people}}
                     {{> person}}
                   {{/each}}
-                </ul>
-                <div id="orgMap">
+                </ul> -->
 
-                </div>
+
+                {{> diagram}}
             </div>
+
+
 
         </div>
 
@@ -63,29 +65,40 @@
 </body>
 
 <template name="person">
-  <li>{{name}}</li>
-</template>
-<template name="task">
-  <li class="{{#if checked}}checked{{/if}}">
-   <button class="delete">&times;</button>
-
-   <input type="checkbox" checked="{{checked}}" class="toggle-checked" />
-
-   <span class="text">{{text}}</span>
- </li>
+  <li>{{name}} {{boss_id}}</li>
 </template>
 
 <template name="addPersonForm">
-  <form class="new-person">
-    <label>Name
-    <input type="text" />
-    </label>
-
-    <label>Team
-    <input type="text" />
-    </label>
-
-    <input type="submit" value="Save" />
-    <button class="cancel">Cancel</button>
+  <form class="edit-person">
+    <div class="form-group">
+    <label for="personName">Name</label>
+    <input value="{{person.name}}" type="text" class="form-control" id="personName" placeholder="John Smith">
+    </div>
+    <div class="form-group">
+      <label for="personTitle">Title</label>
+      <input value="{{person.title}}" type="text" class="form-control" id="personTitle" placeholder="President">
+    </div>
+    <div class="form-group">
+      <label for="personBoss">Manager</label>
+      <select id="personBoss">
+        <option>---</option>
+        {{#each people}}
+          <option value="{{_id}}" selected="{{equals ../person.boss_id _id}}">{{name}} {{bossId}}</option>
+        {{/each}}
+      </select>
+    </div>
+    <button class="save btn btn-default">Save</button>
+    <button class="cancel btn btn-default">Cancel</button>
   </form>
+</template>
+
+<template name="diagram">
+    <div id="svgdiv">
+      <svg></svg>
+    </div>
+</template>
+
+<template name="sidebarForm">
+  <div class="sidebar-item add-person">Add Person</div>
+  <div class="sidebar-item add-team">Add Team</div>
 </template>

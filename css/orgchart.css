@@ -1,3 +1,4 @@
+
 body {
   height:100%;
 }
@@ -36,3 +37,53 @@ border-color: #e7e7e7;
   background-color:#f4f4f4;
   border-color:#e3e3e3;
 }
+
+form.edit-person {
+  padding:10px;
+}
+
+
+/* d3 */
+
+  svg text.icon {
+     font-family: FontAwesome;
+     font-size:60px;
+  }
+
+  .person-avatar {
+    cursor: pointer;
+  }
+
+  .person-avatar rect:hover {
+    fill:#3765A4;
+  }
+  .person-avatar rect:active {
+    fill:#2B4782;
+  }
+  .person-avatar rect {
+    stroke: #B4843C;
+    fill:#3E77BB;
+    color:white;
+  }
+
+  .person-avatar circle {
+	  fill: #fff;
+	  stroke: steelblue;
+	  stroke-width: 3px;
+	}
+
+	.person-avatar text {
+    font: 12px sans-serif;
+    fill:white;
+  }
+
+  .person-avatar text.title {
+    font:10px sans-serif;
+    fill:white;
+  }
+
+	.link {
+	  fill: none;
+	  stroke: #ccc;
+	  stroke-width: 2px;
+	}
